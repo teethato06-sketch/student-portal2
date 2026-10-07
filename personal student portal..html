@@ -1,0 +1,860 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>Student Portal</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f9;
+            color: #222;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 230px;
+            height: 100vh;
+            padding: 20px;
+            background: white;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.08);
+        }
+
+        .sidebar h2 {
+            margin-top: 0;
+            margin-bottom: 25px;
+        }
+
+        .sidebar button {
+            width: 100%;
+            padding: 13px;
+            margin-bottom: 8px;
+            border: none;
+            border-radius: 8px;
+            color: black;
+            text-align: left;
+            cursor: pointer;
+        }
+
+        /* MENU BUTTON */
+        .menu-button {
+            background: #2563eb;
+            color: white !important;
+        }
+
+        .menu-button span {
+            float: right;
+        }
+
+        /* DROPDOWN MENU */
+        .menu {
+            display: none;
+            margin-top: 10px;
+        }
+
+        .menu button {
+            background: transparent;
+        }
+
+        .menu button:hover {
+            background: #2563eb;
+            color: white;
+        }
+
+        /* MAIN CONTENT AREA */
+        .main {
+            margin-left: 230px;
+            padding: 30px;
+        }
+
+        /* PAGES */
+        .page {
+            display: none;
+        }
+
+        #home {
+            display: block;
+        }
+
+        /* DASHBOARD CARDS */
+        .cards {
+            display: flex;
+            gap: 20px;
+            margin-top: 25px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 200px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .card p {
+            font-size: 30px;
+            margin: 10px 0;
+        }
+
+        /* WELCOME BOX */
+        .welcome-box {
+            background: white;
+            margin-top: 25px;
+            padding: 25px;
+            border-radius: 12px;
+        }
+
+        /* FORMS */
+        .form {
+            background: white;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 12px;
+            max-width: 600px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 12px;
+            border: 1px solid #ccc;
+            border-radius: 7px;
+            font-size: 15px;
+        }
+
+        textarea {
+            height: 120px;
+            resize: vertical;
+        }
+
+        .form button {
+            padding: 12px 20px;
+            border: none;
+            border-radius: 7px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+        }
+
+        .form button:hover {
+            background: #1d4ed8;
+        }
+
+        /* ITEMS LIST */
+        .item {
+            background: white;
+            padding: 18px;
+            margin-top: 15px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.06);
+        }
+
+        .item h3 {
+            margin-top: 0;
+        }
+
+        .delete {
+            background: #dc2626;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        /* NOTIFICATIONS */
+        .notification-box {
+            background: white;
+            padding: 20px;
+            margin-top: 25px;
+            border-radius: 12px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+        }
+
+        .notification {
+            padding: 15px;
+            margin-top: 10px;
+            border-radius: 8px;
+            background: #fef3c7;
+        }
+
+        .notification strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .notify-btn {
+            background: #2563eb;
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        .notify-btn:hover {
+            background: #1d4ed8;
+        }
+
+        /* CALENDAR */
+        .calendar {
+            background: white;
+            padding: 15px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 750px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-header h2 {
+            margin: 0;
+            font-size: 22px;
+        }
+
+        .calendar-header button {
+            border: none;
+            background: #2563eb;
+            color: white;
+            padding: 8px 13px;
+            border-radius: 7px;
+            cursor: pointer;
+        }
+
+        .weekdays, .calendar-days {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 4px;
+        }
+
+        .weekdays div {
+            text-align: center;
+            font-weight: bold;
+            padding: 8px;
+        }
+
+        .day {
+            min-height: 65px;
+            padding: 6px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            cursor: pointer;
+            overflow: hidden;
+        }
+
+        .day:hover {
+            background: #f1f5f9;
+        }
+
+        .today {
+            border: 2px solid #2563eb;
+        }
+
+        .calendar-event {
+            display: block;
+            font-size: 11px;
+            margin-top: 3px;
+            padding: 3px;
+            border-radius: 4px;
+            background: #dbeafe;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        /* RESPONSIVE DESIGN */
+        @media (max-width: 700px) {
+            .sidebar {
+                width: 180px;
+            }
+
+            .main {
+                margin-left: 180px;
+                padding: 15px;
+            }
+
+            .cards {
+                flex-direction: column;
+            }
+
+            .card {
+                width: 100%;
+            }
+
+            .calendar {
+                max-width: 100%;
+            }
+
+            .day {
+                min-height: 55px;
+                font-size: 12px;
+            }
+
+            .calendar-event {
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+    <div class="sidebar">
+        <h2>🎓 Student Portal</h2>
+
+        <button class="menu-button" onclick="toggleMenu()">
+            ☰ Menu <span>▼</span>
+        </button>
+
+        <div id="menu" class="menu">
+            <button onclick="showPage('home')">🏠 Home</button>
+            <button onclick="showPage('assignments')">📝 Assignments</button>
+            <button onclick="showPage('tests')">🧪 Tests</button>
+            <button onclick="showPage('notes')">📖 Notes</button>
+            <button onclick="showPage('events')">📅 Events</button>
+            <button onclick="showPage('calendar')">🗓️ Calendar</button>
+        </div>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div class="main">
+
+        <!-- HOME PAGE -->
+        <section id="home" class="page">
+            <h1>Welcome back 👋</h1>
+            <p>Manage your school work in one place.</p>
+
+            <button class="notify-btn" onclick="enableNotifications()">
+                🔔 Enable Notifications
+            </button>
+
+            <div class="cards">
+                <div class="card">
+                    <h3>📝 Assignments</h3>
+                    <p id="assignmentCount">0</p>
+                </div>
+
+                <div class="card">
+                    <h3>🧪 Tests</h3>
+                    <p id="testCount">0</p>
+                </div>
+
+                <div class="card">
+                    <h3>📖 Notes</h3>
+                    <p id="noteCount">0</p>
+                </div>
+            </div>
+
+            <!-- NOTIFICATIONS BOX -->
+            <div class="notification-box">
+                <h2>🔔 Notifications</h2>
+                <p id="notificationCount">No notifications</p>
+                <div id="notifications"></div>
+            </div>
+
+            <div class="welcome-box">
+                <h2>My School Work</h2>
+                <p>Use the menu to add your assignments, tests, notes and events.</p>
+            </div>
+        </section>
+
+        <!-- ASSIGNMENTS PAGE -->
+        <section id="assignments" class="page">
+            <h1>📝 My Assignments</h1>
+
+            <div class="form">
+                <input id="assignmentName" type="text" placeholder="Assignment name">
+                <input id="assignmentSubject" type="text" placeholder="Subject">
+                <input id="assignmentDate" type="date">
+                <button onclick="addAssignment()">+ Add Assignment</button>
+            </div>
+
+            <div id="assignmentList"></div>
+        </section>
+
+        <!-- TESTS PAGE -->
+        <section id="tests" class="page">
+            <h1>🧪 My Tests</h1>
+
+            <div class="form">
+                <input id="testName" type="text" placeholder="Test name">
+                <input id="testSubject" type="text" placeholder="Subject">
+                <input id="testDate" type="date">
+                <button onclick="addTest()">+ Add Test</button>
+            </div>
+
+            <div id="testList"></div>
+        </section>
+
+        <!-- NOTES PAGE -->
+        <section id="notes" class="page">
+            <h1>📖 My Notes</h1>
+
+            <div class="form">
+                <input id="noteTitle" type="text" placeholder="Note title">
+                <textarea id="noteText" placeholder="Write your notes here..."></textarea>
+                <input id="noteDate" type="date">
+                <button onclick="addNote()">+ Save Note</button>
+            </div>
+
+            <div id="noteList"></div>
+        </section>
+
+        <!-- EVENTS PAGE -->
+        <section id="events" class="page">
+            <h1>📅 My Events</h1>
+
+            <div class="form">
+                <input id="eventName" type="text" placeholder="Event name">
+                <input id="eventDate" type="date">
+                <button onclick="addEvent()">+ Add Event</button>
+            </div>
+
+            <div id="eventList"></div>
+        </section>
+
+        <!-- CALENDAR PAGE -->
+        <section id="calendar" class="page">
+            <h1>🗓️ My Calendar</h1>
+
+            <div class="calendar">
+                <div class="calendar-header">
+                    <button onclick="previousMonth()">←</button>
+                    <h2 id="monthYear"></h2>
+                    <button onclick="nextMonth()">→</button>
+                </div>
+
+                <div class="weekdays">
+                    <div>Sun</div>
+                    <div>Mon</div>
+                    <div>Tue</div>
+                    <div>Wed</div>
+                    <div>Thu</div>
+                    <div>Fri</div>
+                    <div>Sat</div>
+                </div>
+
+                <div id="calendarDays" class="calendar-days"></div>
+            </div>
+        </section>
+
+    </div>
+
+    <!-- JAVASCRIPT -->
+    <script>
+        // NAVIGATION
+        function showPage(pageName) {
+            let pages = document.querySelectorAll(".page");
+            pages.forEach(function(page) {
+                page.style.display = "none";
+            });
+
+            document.getElementById(pageName).style.display = "block";
+
+            if (pageName === "calendar") {
+                displayCalendar();
+            }
+        }
+
+        // ASSIGNMENTS
+        let assignments = JSON.parse(localStorage.getItem("assignments")) || [];
+
+        function addAssignment() {
+            let name = document.getElementById("assignmentName").value;
+            let subject = document.getElementById("assignmentSubject").value;
+            let date = document.getElementById("assignmentDate").value;
+
+            if (name === "" || subject === "" || date === "") {
+                alert("Please fill in everything.");
+                return;
+            }
+
+            assignments.push({ name: name, subject: subject, date: date });
+            localStorage.setItem("assignments", JSON.stringify(assignments));
+
+            document.getElementById("assignmentName").value = "";
+            document.getElementById("assignmentSubject").value = "";
+            document.getElementById("assignmentDate").value = "";
+
+            displayAssignments();
+            displayCalendar();
+            checkNotifications();
+        }
+
+        function displayAssignments() {
+            let list = document.getElementById("assignmentList");
+            list.innerHTML = "";
+
+            assignments.forEach(function(item, index) {
+                list.innerHTML += `
+                    <div class="item">
+                        <h3>${item.name}</h3>
+                        <p>Subject: ${item.subject}</p>
+                        <p>Due: ${item.date}</p>
+                        <button class="delete" onclick="deleteAssignment(${index})">Delete</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById("assignmentCount").innerText = assignments.length;
+        }
+
+        function deleteAssignment(index) {
+            assignments.splice(index, 1);
+            localStorage.setItem("assignments", JSON.stringify(assignments));
+            displayAssignments();
+            displayCalendar();
+            checkNotifications();
+        }
+
+        // TESTS
+        let tests = JSON.parse(localStorage.getItem("tests")) || [];
+
+        function addTest() {
+            let name = document.getElementById("testName").value;
+            let subject = document.getElementById("testSubject").value;
+            let date = document.getElementById("testDate").value;
+
+            if (name === "" || subject === "" || date === "") {
+                alert("Please fill in everything.");
+                return;
+            }
+
+            tests.push({ name: name, subject: subject, date: date });
+            localStorage.setItem("tests", JSON.stringify(tests));
+
+            document.getElementById("testName").value = "";
+            document.getElementById("testSubject").value = "";
+            document.getElementById("testDate").value = "";
+
+            displayTests();
+            displayCalendar();
+            checkNotifications();
+        }
+
+        function displayTests() {
+            let list = document.getElementById("testList");
+            list.innerHTML = "";
+
+            tests.forEach(function(test, index) {
+                list.innerHTML += `
+                    <div class="item">
+                        <h3>${test.name}</h3>
+                        <p>Subject: ${test.subject}</p>
+                        <p>Date: ${test.date}</p>
+                        <button class="delete" onclick="deleteTest(${index})">Delete</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById("testCount").innerText = tests.length;
+        }
+
+        function deleteTest(index) {
+            tests.splice(index, 1);
+            localStorage.setItem("tests", JSON.stringify(tests));
+            displayTests();
+            displayCalendar();
+            checkNotifications();
+        }
+
+        // NOTES
+        let notes = JSON.parse(localStorage.getItem("notes")) || [];
+
+        function addNote() {
+            let title = document.getElementById("noteTitle").value;
+            let text = document.getElementById("noteText").value;
+            let date = document.getElementById("noteDate").value;
+
+            if (title === "" || text === "" || date === "") {
+                alert("Please fill in everything.");
+                return;
+            }
+
+            notes.push({ title: title, text: text, date: date });
+            localStorage.setItem("notes", JSON.stringify(notes));
+
+            document.getElementById("noteTitle").value = "";
+            document.getElementById("noteText").value = "";
+            document.getElementById("noteDate").value = "";
+
+            displayNotes();
+            displayCalendar();
+        }
+
+        function displayNotes() {
+            let list = document.getElementById("noteList");
+            list.innerHTML = "";
+
+            notes.forEach(function(note, index) {
+                list.innerHTML += `
+                    <div class="item">
+                        <h3>${note.title}</h3>
+                        <p>${note.text}</p>
+                        <p>Date: ${note.date}</p>
+                        <button class="delete" onclick="deleteNote(${index})">Delete</button>
+                    </div>
+                `;
+            });
+
+            document.getElementById("noteCount").innerText = notes.length;
+        }
+
+        function deleteNote(index) {
+            notes.splice(index, 1);
+            localStorage.setItem("notes", JSON.stringify(notes));
+            displayNotes();
+            displayCalendar();
+        }
+
+        // EVENTS
+        let events = JSON.parse(localStorage.getItem("events")) || [];
+
+        function addEvent() {
+            let name = document.getElementById("eventName").value;
+            let date = document.getElementById("eventDate").value;
+
+            if (name === "" || date === "") {
+                alert("Please fill in everything.");
+                return;
+            }
+
+            events.push({ name: name, date: date });
+            localStorage.setItem("events", JSON.stringify(events));
+
+            document.getElementById("eventName").value = "";
+            document.getElementById("eventDate").value = "";
+
+            displayEvents();
+            displayCalendar();
+        }
+
+        function displayEvents() {
+            let list = document.getElementById("eventList");
+            list.innerHTML = "";
+
+            events.forEach(function(event, index) {
+                list.innerHTML += `
+                    <div class="item">
+                        <h3>${event.name}</h3>
+                        <p>Date: ${event.date}</p>
+                        <button class="delete" onclick="deleteEvent(${index})">Delete</button>
+                    </div>
+                `;
+            });
+        }
+
+        function deleteEvent(index) {
+            events.splice(index, 1);
+            localStorage.setItem("events", JSON.stringify(events));
+            displayEvents();
+            displayCalendar();
+        }
+
+        // DESKTOP NOTIFICATIONS & ALERTS
+        function enableNotifications() {
+            if (!("Notification" in window)) {
+                alert("Your browser does not support desktop notifications.");
+                return;
+            }
+
+            Notification.requestPermission().then(function(permission) {
+                if (permission === "granted") {
+                    alert("Notifications enabled!");
+                }
+            });
+        }
+
+        function sendNotification(message) {
+            if ("Notification" in window && Notification.permission === "granted") {
+                new Notification("🎓 Student Portal", {
+                    body: message,
+                    icon: "https://cdn-icons-png.flaticon.com/512/3135/3135755.png"
+                });
+            }
+        }
+
+        function checkNotifications() {
+            let notifications = [];
+
+            // ASSIGNMENTS
+            assignments.forEach(function(item) {
+                let days = getDaysLeft(item.date);
+
+                if (days < 0) {
+                    notifications.push("🔴 " + item.name + " is overdue!");
+                } else if (days === 0) {
+                    let message = item.name + " is due today!";
+                    notifications.push("🚨 " + message);
+                    sendNotification(message);
+                } else if (days === 1) {
+                    let message = item.name + " is due tomorrow!";
+                    notifications.push("⚠️ " + message);
+                    sendNotification(message);
+                } else if (days <= 3) {
+                    notifications.push("🟡 " + item.name + " is due in " + days + " days.");
+                }
+            });
+
+            // TESTS
+            tests.forEach(function(test) {
+                let days = getDaysLeft(test.date);
+
+                if (days < 0) {
+                    notifications.push("🔴 " + test.name + " has passed.");
+                } else if (days === 0) {
+                    let message = test.name + " is TODAY!";
+                    notifications.push("🚨 " + message);
+                    sendNotification(message);
+                } else if (days === 1) {
+                    let message = test.name + " is tomorrow!";
+                    notifications.push("⚠️ " + message);
+                    sendNotification(message);
+                } else if (days <= 3) {
+                    notifications.push("🧪 " + test.name + " is in " + days + " days.");
+                }
+            });
+
+            showNotifications(notifications);
+        }
+
+        function getDaysLeft(date) {
+            let today = new Date();
+            let dueDate = new Date(date);
+
+            today.setHours(0, 0, 0, 0);
+            dueDate.setHours(0, 0, 0, 0);
+
+            let difference = dueDate - today;
+            return Math.round(difference / (1000 * 60 * 60 * 24));
+        }
+
+        function showNotifications(list) {
+            let notificationArea = document.getElementById("notifications");
+            let notificationCount = document.getElementById("notificationCount");
+
+            notificationArea.innerHTML = "";
+
+            if (list.length === 0) {
+                notificationCount.innerText = "No notifications 🎉";
+                return;
+            }
+
+            notificationCount.innerText = list.length + " notification(s)";
+
+            list.forEach(function(message) {
+                notificationArea.innerHTML += `
+                    <div class="notification">
+                        <strong>Reminder</strong>
+                        ${message}
+                    </div>
+                `;
+            });
+        }
+
+        // CALENDAR
+        let currentDate = new Date();
+
+        function displayCalendar() {
+            let year = currentDate.getFullYear();
+            let month = currentDate.getMonth();
+
+            let monthNames = [
+                "January", "February", "March", "April", "May", "June",
+                "July", "August", "September", "October", "November", "December"
+            ];
+
+            document.getElementById("monthYear").innerText = monthNames[month] + " " + year;
+
+            let firstDay = new Date(year, month, 1).getDay();
+            let numberOfDays = new Date(year, month + 1, 0).getDate();
+            let calendarDays = document.getElementById("calendarDays");
+
+            calendarDays.innerHTML = "";
+
+            for (let i = 0; i < firstDay; i++) {
+                calendarDays.innerHTML += `<div></div>`;
+            }
+
+            for (let day = 1; day <= numberOfDays; day++) {
+                let dateText = year + "-" + String(month + 1).padStart(2, "0") + "-" + String(day).padStart(2, "0");
+                let today = new Date();
+                let todayText = today.getFullYear() + "-" + String(today.getMonth() + 1).padStart(2, "0") + "-" + String(today.getDate()).padStart(2, "0");
+
+                let todayClass = (dateText === todayText) ? "today" : "";
+                let eventsHTML = "";
+
+                assignments.forEach(function(item) {
+                    if (item.date === dateText) {
+                        eventsHTML += `<span class="calendar-event">📝 ${item.name}</span>`;
+                    }
+                });
+
+                tests.forEach(function(test) {
+                    if (test.date === dateText) {
+                        eventsHTML += `<span class="calendar-event">🧪 ${test.name}</span>`;
+                    }
+                });
+
+                notes.forEach(function(note) {
+                    if (note.date === dateText) {
+                        eventsHTML += `<span class="calendar-event">📖 ${note.title}</span>`;
+                    }
+                });
+
+                events.forEach(function(event) {
+                    if (event.date === dateText) {
+                        eventsHTML += `<span class="calendar-event">📅 ${event.name}</span>`;
+                    }
+                });
+
+                calendarDays.innerHTML += `
+                    <div class="day ${todayClass}">
+                        <strong>${day}</strong>
+                        ${eventsHTML}
+                    </div>
+                `;
+            }
+        }
+
+        function previousMonth() {
+            currentDate.setMonth(currentDate.getMonth() - 1);
+            displayCalendar();
+        }
+
+        function nextMonth() {
+            currentDate.setMonth(currentDate.getMonth() + 1);
+            displayCalendar();
+        }
+
+        function toggleMenu() {
+            let menu = document.getElementById("menu");
+            menu.style.display = (menu.style.display === "block") ? "none" : "block";
+        }
+
+        // LOAD DATA ON STARTUP
+        displayAssignments();
+        displayTests();
+        displayNotes();
+        displayEvents();
+        checkNotifications();
+        displayCalendar();
+    </script>
+
+</body>
+</html>
